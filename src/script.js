@@ -280,3 +280,4 @@ document.addEventListener('mousemove', (event) => {
     // console.log("camera:",camera.position)
 
 }, false)
+gui.close()
