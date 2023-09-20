@@ -104,6 +104,7 @@ const targetPoints = [
 // Animate camera based on overall scroll progress
 const cameraTimeline = gsap.timeline({
     scrollTrigger: {
+        scroller:scrollContainer,
         id:"wael",
         trigger: scrollContainer,
         start: "top top",
@@ -139,6 +140,7 @@ cameraTimeline
     // });
     const targetTimeline = gsap.timeline({
         scrollTrigger: {
+            scroller:scrollContainer,
             id:"waell",
             trigger: scrollContainer,
             start: "top top",
