@@ -226,7 +226,7 @@ renderLoop();
 
 
 
-loader.load('models/gltf/Musé 01.gltf', function (gltf) {
+loader.load('models/gltf/untitled.glb', function (gltf) {
     gltf.scene.traverse( child => {
 
         if ( child.material ) {child.material.metalness = 0.7;
