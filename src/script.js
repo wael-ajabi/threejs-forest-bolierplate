@@ -107,7 +107,7 @@ const cameraTimeline = gsap.timeline({
         id:"wael",
         trigger: scrollContainer,
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom bottom", toggleActions: "play reset none reset",
         scrub: 10,
     }
 });
@@ -143,7 +143,7 @@ cameraTimeline
             trigger: scrollContainer,
             start: "top top",
             end: "bottom bottom",
-            scrub: 10,
+            scrub: 10,toggleActions: "play reset none reset",
             
         }
     });
