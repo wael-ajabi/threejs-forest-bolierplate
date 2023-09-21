@@ -19,7 +19,7 @@ loader.setDRACOLoader(dracoLoader)
 setTimeout(() => {
     document.getElementsByClassName('loader-container')[0].style.display = "none";
     document.getElementsByTagName('body').overflow="";
-  }, 10000);
+  }, 20000);
 // CREATE SCENE
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('#c8f0f9')
