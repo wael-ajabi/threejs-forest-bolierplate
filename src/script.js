@@ -15,11 +15,12 @@ dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
 dracoLoader.setDecoderConfig({ type: 'js' })
 loader.setDRACOLoader(dracoLoader)
 // ... [Rest of your imports and initializations]
-
+document.getElementsByTagName('body').overflow="hidden";
 setTimeout(() => {
     document.getElementsByClassName('loader-container')[0].style.display = "none";
-    document.getElementsByTagName('body').overflow="auto";
-  }, 20000);
+    document.getElementsByTagName('body')[0].style.overflow = "";
+    console.log(document.getElementsByTagName('body')[0].style.overflow); 
+}, 10000);
 // CREATE SCENE
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('#c8f0f9')
