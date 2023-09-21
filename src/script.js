@@ -18,7 +18,7 @@ loader.setDRACOLoader(dracoLoader)
 
 setTimeout(() => {
     document.getElementsByClassName('loader-container')[0].style.display = "none";
-    document.getElementsByTagName('body').overflow="";
+    document.getElementsByTagName('body').overflow="auto";
   }, 20000);
 // CREATE SCENE
 const scene = new THREE.Scene()
