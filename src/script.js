@@ -55,7 +55,7 @@ pmremGenerator.compileEquirectangularShader();
 const hdriLoader = new EXRLoader();
 hdriLoader.load( 'models/gltf/Modern_Atrium.exr', function ( texture ) {
     const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
-    scene.background = envMap;
+    // scene.background = envMap;
     scene.environment = envMap;
     texture.minFilter = THREE.LinearFilter;
 texture.magFilter = THREE.LinearFilter;
@@ -132,7 +132,7 @@ scene.add(helper);
 
 /////////////////////////////////////////////////////////////////////////
 ///// LOADING GLB/GLTF MODEL FROM BLENDER
-loader.load('models/gltf/test.glb', function (gltf) {
+loader.load('models/gltf/test1.glb', function (gltf) {
 
     gltf.scene.traverse( child => {
         if ( child.material ) {if(child){child.castShadow= true; child.receiveShadow=true;}}
@@ -157,63 +157,30 @@ function setOrbitControlsLimits(){
     // controls.minDistance = 35
     // controls.maxDistance = 60
     controls.enableRotate = false
+    controls.enableZoom = false
+
     // controls.maxPolarAngle = Math.PI /2.5
 }
 
 /////////////////////////////////////////////////////////////////////////
 //// Scroll-based Animation Logic
 // Initialize the start and end points
-
 const points = [
-    { x: -1155.1769117242054, y: 149.3672569702152, z: -12.347546346681437 },
-    { x: -941.6832180422514, y: 114.85087869760511, z: 15.330062630509714 },
-    { x:  -848.7300483826515, y: 79.50317018051175, z: -0.987331151870487 },
-    { x:  -686.8519559066519, y: 165.6941407277027, z:10.01895979122412},
-    { x:  -659.5112519266928, y: 145.6967778548965, z:268.30333334007423},
-    { x:  -418.45288769822065, y: 96.23047483100343, z:228.55485041195095},
-    { x:  -412.9419463357208, y: 126.55531098758006, z:310.45690277806756},
+    {x: -1167.9765523808107, y: 101.69685879623424, z: -23.51911346877717 },
+
+    {x: -899.4653797455863, y: 87.9930064286672, z: -4.288017980795621},
     { x:  -450.2364089383408, y: 152.56098607927993, z:391.0322548879993},
     { x:  -54.87394011322863, y: 112.33210428875365, z:233.64385090868072},///
     { x:  -96.03855290623571, y: 109.61632821426115, z:50.57571274016168},///
-    { x:   -129.81887633882263, y: 120.4143707613044, z:-3.700751600269286},
-    { x:   41.525708100382786, y: 114.16318074689966, z:10.89301972148985},
-    { x:   156.23492590371927, y: 134.85481355082072, z:-25.797843914416642},
-    { x:    265.3716858724920, y: 109.11864984709936, z:-10.715592851524775},
-    { x:     276.55597933455914, y: 125.7876094784339, z:14.885318284321428},
-    { x:      639.8219698544655, y: 115.29880823695225, z:10.930190053994853},
-    { x:       707.0875473262995, y: 171.6919291009787, z:80.59216733595804},
-    { x:       670.5900567648991, y: 135.57800556169428, z:-186.3542612427924},
-    { x:       498.5880483104372, y: 125.88528198883529, z:-313.720902265863},
-    { x:       197.64709530958655, y: 105.5628244617305, z:-471.7119225506132},
-    { x:       129.20772437053196, y: 154.20220216751082, z:-403.69819414998074},
-    { x:        -46.69382703635945, y: 139.7644704045829, z:-548.9416074844387},
+
 
 ];
 
 const targetPoints = [
-    { x: 0, y: 0, z: 0 },
-    { x: 0, y: 0, z: 0 },
-    { x: 7.2516693978584845, y: 96.39967392820918, z: 13.934015924699725 },
-    { x: -645.6468986157037, y: 61.747348874435424, z:  735.6056329171456 },
-    { x: -652.1149679401543, y: 118.65794013281202, z:  516.7508250668371 },
-    { x: -413.56427827462807, y: 89.06628199518954, z:  741.1670400533912 },
-    { x: -413.44590233651803, y: 113.53564336967884, z:  438.1416389979043 },
-    { x: 9.442218342669989, y: 102.5224315312508, z:  374.24522564688056 },
-    { x: -59.4159738074015,y: 106.94026942735987,z :65.86241608394329 },//
-    { x: -88.92662758600355,y: 108.83362852569232,z :-66.30164515731548 },//
-    { x: 18.39526936786025,y: 101.21886244784814,z :4.887442740139847 },
-    { x: 234.69196942524917,y: 103.63930725632078,z :12.957750534682047 },
-    { x: 179.68133653028835,y: 132.14226278033024,z :-24.914553392416554 },
-    { x: 263.79679623787524,y: 110.81179359325719,z :40.21352313293212 },
-    { x: 353.0941558278252,y: 119.02372604432412,z :13.639320674100126 },
-    { x: 720.665479072253,y: 112.53293945875049,z :10.704251403640429 },
-    { x: 432.14653688411073,y: 50.53019439004269,z :-769.2027925425135 },
-    { x: 514.4138541100889,y: 67.81477683323041,z : -792.3378359745581 },
-    { x: 503.7842043755808,y:  96.35228623693877,z : -799.8482017913576 },
-    { x: 197.64709530958655,y:  105.5628244617305,z : -471.7119225506132 },
-    { x:  125.08362909465554,y:  154.00741444927547,z : -403.63105624565077 },
-    { x:  -45.40712225271626,y:  139.43091593353108,z :  -565.3822126117637 },
+    { x: -3.2144506346523603, y: 93.27186383118416, z: -11.06911218481582 },
+    { x: 1.667417619767381, y: 99.70309852565926, z: 11.42039605687066 },
 
+   
 ];
 
 
@@ -335,7 +302,6 @@ function checkTriggerPosition(cameraPosition) {
 
 };
 window.addEventListener('wheel', scrollHandler);
-controls.enableZoom = false
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -344,11 +310,14 @@ function rendeLoop() {
     const cameraPosition = camera.position;
     console.log(popupClosed);
     // Check the trigger position and update the popup display
-    checkTriggerPosition(cameraPosition);
+    // checkTriggerPosition(cameraPosition);
     TWEEN.update()
     controls.update()
     renderer.render(scene, camera)
     requestAnimationFrame(rendeLoop)
+    console.log("controls:",controls.target)
+    console.log("camera:",camera.position)
+
 }
 
 setOrbitControlsLimits(); // Set initial orbit control limits
@@ -394,10 +363,8 @@ gui.add(controls.target, 'z').min(-100).max(100000).step(0.00001).name('Dir cont
 
 //////////////////////////////////////////////////
 //// ON MOUSE MOVE TO GET CAMERA POSITION
+gui.closed=true;
 document.addEventListener('mousemove', (event) => {
     event.preventDefault()
-gui.closed=true;
-    // console.log("controls:",controls.target)
-    // console.log("camera:",camera.position)
 
 }, false)
