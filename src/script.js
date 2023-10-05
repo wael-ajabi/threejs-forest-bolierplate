@@ -156,7 +156,7 @@ function setOrbitControlsLimits(){
     // controls.dampingFactor = 0.04
     // controls.minDistance = 35
     // controls.maxDistance = 60
-    controls.enableRotate = true
+    controls.enableRotate = false
     // controls.maxPolarAngle = Math.PI /2.5
 }
 
