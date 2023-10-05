@@ -396,7 +396,7 @@ gui.add(controls.target, 'z').min(-100).max(100000).step(0.00001).name('Dir cont
 //// ON MOUSE MOVE TO GET CAMERA POSITION
 document.addEventListener('mousemove', (event) => {
     event.preventDefault()
-
+gui.closed=true;
     // console.log("controls:",controls.target)
     // console.log("camera:",camera.position)
 
