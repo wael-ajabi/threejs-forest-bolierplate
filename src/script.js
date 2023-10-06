@@ -20,6 +20,7 @@ loader.setDRACOLoader(dracoLoader)
 /////////////////////////////////////////////////////////////////////////
 ///// DIV CONTAINER CREATION TO HOLD THREEJS EXPERIENCE
 const container = document.createElement('div')
+container.classList.add("three");
 document.body.appendChild(container)
 
 /////////////////////////////////////////////////////////////////////////
@@ -29,7 +30,7 @@ scene.background = new THREE.Color('#c8f0f9')
 
 /////////////////////////////////////////////////////////////////////////
 ///// RENDERER CONFIG
-const renderer = new THREE.WebGLRenderer({ antialias: true,precision: "highp" }) // turn on antialias
+const renderer = new THREE.WebGLRenderer({ antialias: true }) // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight) // make it full screen
 renderer.outputEncoding = THREE.sRGBEncoding // set color encoding
@@ -156,159 +157,211 @@ function setOrbitControlsLimits(){
     // controls.dampingFactor = 0.04
     // controls.minDistance = 35
     // controls.maxDistance = 60
-    controls.enableRotate = false
-    controls.enableZoom = false
-
+    controls.enableRotate = true
+    controls.enableZoom = true
+    // onMouvement=true
     // controls.maxPolarAngle = Math.PI /2.5
 }
 
 /////////////////////////////////////////////////////////////////////////
 //// Scroll-based Animation Logic
 // Initialize the start and end points
-const points = [
-    {x: -1167.9765523808107, y: 101.69685879623424, z: -23.51911346877717 },
-
-    {x: -899.4653797455863, y: 87.9930064286672, z: -4.288017980795621},
-    { x:  -450.2364089383408, y: 152.56098607927993, z:391.0322548879993},
-    { x:  -54.87394011322863, y: 112.33210428875365, z:233.64385090868072},///
-    { x:  -96.03855290623571, y: 109.61632821426115, z:50.57571274016168},///
 
 
-];
 
-const targetPoints = [
-    { x: -3.2144506346523603, y: 93.27186383118416, z: -11.06911218481582 },
-    { x: 1.667417619767381, y: 99.70309852565926, z: 11.42039605687066 },
+// let progress = 0;
+// let currentSegment = 0;
+// var modal = document.getElementById("myModal");
 
-   
-];
+// // Get the <span> element that closes the modal
+// let popupClosed = true; // Flag to track whether the user closed the popup
+// var span = document.getElementsByClassName("close")[0];
 
-
-let progress = 0;
-let currentSegment = 0;
-var modal = document.getElementById("myModal");
-
-// Get the <span> element that closes the modal
-let popupClosed = true; // Flag to track whether the user closed the popup
-var span = document.getElementsByClassName("close")[0];
-
-span.onclick=function () {
-    popupClosed = false; // Set the flag to indicate that the popup is closed
-    console.log('testttttttttttttttttttttttttttttt');
-    modal.style.display = "none";
-    document.body.style.overflow = '';
-    window.addEventListener('wheel', scrollHandler); // This will reactivate scrolling
+// span.onclick=function () {
+//     popupClosed = false; // Set the flag to indicate that the popup is closed
+//     console.log('testttttttttttttttttttttttttttttt');
+//     modal.style.display = "none";
+//     document.body.style.overflow = '';
+//     window.addEventListener('wheel', scrollHandler); // This will reactivate scrolling
     
     
-}
+// }
 // Assuming you have a close button in your HTML
 
 // if (span) {
 //     span.addEventListener("click", closePopup);
 // }
-const triggerPosition = new THREE.Vector3(-412.9419463357208,126.55531098758006,310.45690277806756);
-let cameraPositionPrev = new THREE.Vector3(); // Store the previous camera position
+// const triggerPosition = new THREE.Vector3(-412.9419463357208,126.55531098758006,310.45690277806756);
+// let cameraPositionPrev = new THREE.Vector3(); // Store the previous camera position
 
-function checkTriggerPosition(cameraPosition) {
+// function checkTriggerPosition(cameraPosition) {
 
-    const distance = cameraPosition.distanceTo(triggerPosition);
+//     const distance = cameraPosition.distanceTo(triggerPosition);
 
-    // Define a threshold for when the popup should appear
-    const threshold = 5; // Adjust this value as needed
+//     // Define a threshold for when the popup should appear
+//     const threshold = 5; // Adjust this value as needed
   
-    // Calculate the direction of camera movement
+//     // Calculate the direction of camera movement
 
-        // Show the popup if the camera is close to the trigger position and moving forward
-        if (distance < threshold&&popupClosed) {
+//         // Show the popup if the camera is close to the trigger position and moving forward
+//         if (distance < threshold&&popupClosed) {
 
-                modal.style.display = "block";
-                window.removeEventListener('wheel', scrollHandler);
+//                 modal.style.display = "block";
+//                 window.removeEventListener('wheel', scrollHandler);
                 
 
-                console.log(popupClosed);
+//                 console.log(popupClosed);
       
-    // Custom logic to execute when the fourth point is reached
-}else{
-   if(distance < threshold) popupClosed=true;
-   .0
+//     // Custom logic to execute when the fourth point is reached
+// }else{
+//    if(distance < threshold) popupClosed=true;
+//    .0
    
-}
+// }
 
-}
-    let maxSegment = points.length ; // Last accessible segment
-    let minSegment = 0; // First segment
+// }
+//     let maxSegment = points.length ; // Last accessible segment
+//     let minSegment = 0; // First segment
     
-    function scrollHandler(event) {
+    // function scrollHandler(event) {
 
         
-            if (event.deltaY > 0) {
-                progress -= 0.1;
-            } else {
-                progress += 0.1;
-            }
+    //         if (event.deltaY > 0) {
+    //             progress -= 0.1;
+    //         } else {
+    //             progress += 0.1;
+    //         }
         
-            if (progress >= 1) {
-                progress = 0;
-                currentSegment++;
-            } else if (progress < 0) {
-                progress = 1;
-                currentSegment--;
-            }
+    //         if (progress >= 1) {
+    //             progress = 0;
+    //             currentSegment++;
+    //         } else if (progress < 0) {
+    //             progress = 1;
+    //             currentSegment--;
+    //         }
         
-            // Prevent scrolling beyond the first and last points.
-            if (currentSegment > maxSegment) {
-                currentSegment = maxSegment;
-                progress = 1;
-                return;
-            }
-            if (currentSegment < minSegment) {
-                currentSegment = minSegment;
-                progress = 0;
-                return;
-            }
+    //         // Prevent scrolling beyond the first and last points.
+    //         if (currentSegment > maxSegment) {
+    //             currentSegment = maxSegment;
+    //             progress = 1;
+    //             return;
+    //         }
+    //         if (currentSegment < minSegment) {
+    //             currentSegment = minSegment;
+    //             progress = 0;
+    //             return;
+    //         }
     
-        const start = points[currentSegment];
-        const end = points[currentSegment + 1];
-    const startTarget = targetPoints[currentSegment];
-    const endTarget = targetPoints[currentSegment + 1];
+    //     const start = points[currentSegment];
+    //     const end = points[currentSegment + 1];
+    // const startTarget = targetPoints[currentSegment];
+    // const endTarget = targetPoints[currentSegment + 1];
 
-    const x = start.x + progress * (end.x - start.x);
-    const y = start.y + progress * (end.y - start.y);
-    const z = start.z + progress * (end.z - start.z);
+    // const x = start.x + progress * (end.x - start.x);
+    // const y = start.y + progress * (end.y - start.y);
+    // const z = start.z + progress * (end.z - start.z);
 
-    const tx = startTarget.x + progress * (endTarget.x - startTarget.x);
-    const ty = startTarget.y + progress * (endTarget.y - startTarget.y);
-    const tz = startTarget.z + progress * (endTarget.z - startTarget.z);
-    const distance = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2) + Math.pow(end.z - start.z, 2));
-    const duration = distance * 0.5;  // Change 0.5 to whatever factor makes it feel right
+    // const tx = startTarget.x + progress * (endTarget.x - startTarget.x);
+    // const ty = startTarget.y + progress * (endTarget.y - startTarget.y);
+    // const tz = startTarget.z + progress * (endTarget.z - startTarget.z);
+    // const distance = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2) + Math.pow(end.z - start.z, 2));
+    // const duration = distance * 0.5;  // Change 0.5 to whatever factor makes it feel right
+ 
     
+    const points = [
+        {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432},
+        {x: -420.22053031091684, y: 112.82558516828459, z: 302.2956398023865},
+        
+    
+        
+    
+    ];
+    
+    const targetPoints = [
+        {  x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589 },
+        {x: -406.29433389913476, y: 77.77867834138249, z: 1157.743250698177},
+    
+       
+    ];
+
+    let currentIndexPoints= 0 
+    let currentIndexTargets= 0 
+    
+    var scrollableElement = document.body; //document.getElementById('scrollableElement');
+    let onMouvement=false
+    // scrollableElement.addEventListener('wheel', checkScrollDirection);
+    // controls: Vector3 {x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589}    camera: Vector3 {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432}
+    function introAnimation() {
+        controls.enabled = false //disable orbit controls to animate the camera
+        
+        new TWEEN.Tween(camera.position).to({ // from camera position
+            x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432
+        }, 7500) // time take to animate
+        .delay(1000).easing(TWEEN.Easing.Quartic.InOut).start() // define delay, easing
+        .onComplete(function () { //on finish animation
+            controls.enabled = true //enable orbit controls
+            setOrbitControlsLimits() //enable controls limits
+            TWEEN.remove(this) // remove the animation from memory
+            window.addEventListener('wheel', checkScrollDirection);
+
+        })
+        new TWEEN.Tween(controls.target).to({
+            x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589
+        }, 5000).easing(TWEEN.Easing.Cubic.InOut).start();
+    }
+    introAnimation()
+    function checkScrollDirection(event) {
+        if(onMouvement===true){return}
+      if (checkScrollDirectionIsUp(event)) {
+        currentIndexTargets++;
+        currentIndexPoints++;
+        onMouvement=true
+       if (currentIndexPoints>=points.length){
+        currentIndexPoints= points.length-1;
+        currentIndexTargets= points.length-1;
+        return
+       }  
     new TWEEN.Tween(camera.position).to({
-        x: x,
-        y: y,
-        z: z
-    }, duration).easing(TWEEN.Easing.Cubic.InOut).start();
+      x:points[currentIndexPoints].x,y:points[currentIndexPoints].y,z:points[currentIndexPoints].z
+    }, 3000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
+        scrollableElement.removeEventListener('wheel',checkScrollDirection);
+        });
     // .onComplete(function() {
     //     if (currentSegment === 4) {  
     //         onFourthPointReached();
     //     }
     // })
     new TWEEN.Tween(controls.target).to({
-        x: tx,
-        y: ty,
-        z: tz
-    }, duration).easing(TWEEN.Easing.Cubic.InOut).start();
+        x:targetPoints[currentIndexTargets].x,y:targetPoints[currentIndexTargets].y,z:targetPoints[currentIndexTargets].z
+    }, 3000).easing(TWEEN.Easing.Exponential.Out).start();
 
-    controls.update();
+        
+      } else {
+        console.log('Down');
+      }
+    }
+    
+    function checkScrollDirectionIsUp(event) {
+      if (event.wheelDelta) {
+        return event.wheelDelta > 0;
+      }
+      return event.deltaY < 0;
+    }
+ 
+ 
+ 
+ 
+ 
 
-};
-window.addEventListener('wheel', scrollHandler);
+
+// };
 
 
 /////////////////////////////////////////////////////////////////////////
 //// RENDER LOOP FUNCTION
 function rendeLoop() {
-    const cameraPosition = camera.position;
-    console.log(popupClosed);
+    // const cameraPosition = camera.position;
+    // console.log(popupClosed);
     // Check the trigger position and update the popup display
     // checkTriggerPosition(cameraPosition);
     TWEEN.update()

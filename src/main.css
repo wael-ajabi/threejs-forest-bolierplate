@@ -41,3 +41,6 @@ body, html {
     text-decoration: none;
     cursor: pointer;
 }
+.three{
+    z-index: 2;
+}
