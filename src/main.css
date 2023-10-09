@@ -19,6 +19,14 @@ body, html {
  
 }
 
+.loading-screen{
+    width: 100%;
+    height: 100%;
+    background-color:white !important;
+    position: fixed;
+   
+    z-index: 90 ;
+}
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
@@ -43,4 +51,96 @@ body, html {
 }
 .three{
     z-index: 2;
+}
+#logo{
+    z-index: 80;
+    width: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%) scale(1);;
+            transform: translate(-50%, -50%) scale(1);;
+}
+.container {
+    z-index: 80;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    position: fixed;
+    top: 80%;
+    left: 48%;
+    -webkit-transform: translate(-50%, -50%) scale(1);;
+            transform: translate(-50%, -50%) scale(1);;
+}
+.point {
+    z-index: 80;
+	width: 3vw;
+	height: 3vw;
+	border-radius: 100%;
+	margin: 2vw;
+	background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
+	animation: bounce 1.5s 0.5s linear infinite;
+}
+.yellow {
+    z-index: 80;
+	background-color: yellow;
+}
+
+.red {
+    z-index: 80;
+	background-color: orange;
+	animation-delay: 0.1s;
+}
+
+.blue {
+    z-index: 80;
+	background-color: #2786b6;
+	animation-delay: 0.2s;
+}
+
+.violet {
+    z-index: 80;
+	background-color: #8cb59c;
+	animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+	0%, 50%, 100% {
+		transform: scale(1);
+		filter: blur(0px);
+	}
+	25% {
+		transform: scale(0.6);
+		filter: blur(3px);
+	}
+	75% {
+		filter: blur(3px);
+		transform: scale(1.4);
+	}
+}
+
+
+@media (max-width: 767px) {
+    #scroll{
+        position: absolute;
+        display:none; 
+        z-index: 50;
+        left:60%;
+        top:70%;
+        width: 40%;
+    }
+
+    /* Add other mobile-specific styles here */
+}
+
+/* Styles for Desktop (or larger devices) */
+@media (min-width: 768px) {
+    #scroll{
+        position: absolute;
+        display:none; 
+        z-index: 50;
+        left:80%;
+        top:70%;
+    }
+    /* Add other desktop-specific styles here */
 }

@@ -9,10 +9,32 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
+
+
+
+///////////////////////////////////////////////////////////////////////////
+///// Loading Manager
+const manager = new THREE.LoadingManager();
+manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+    // Calculate the percentage of items loaded
+    const progress = (itemsLoaded / itemsTotal) * 100;
+    console.log(`Loading: ${progress.toFixed(2)}%`);
+    // Update your loading UI/Screen with the progress here
+};
+
+manager.onLoad = () => {
+    console.log('All assets loaded!');
+    document.getElementsByClassName('loading-screen')[0].style.display='none';
+
+    introAnimation()
+
+};
+
+
 /////////////////////////////////////////////////////////////////////////
 //// DRACO LOADER TO LOAD DRACO COMPRESSED MODELS FROM BLENDER
 const dracoLoader = new DRACOLoader()
-const loader = new GLTFLoader()
+const loader = new GLTFLoader(manager)
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
 dracoLoader.setDecoderConfig({ type: 'js' })
 loader.setDRACOLoader(dracoLoader)
@@ -31,7 +53,7 @@ scene.background = new THREE.Color('#c8f0f9')
 /////////////////////////////////////////////////////////////////////////
 ///// RENDERER CONFIG
 const renderer = new THREE.WebGLRenderer({ antialias: true }) // turn on antialias
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) //set pixel ratio
+renderer.setPixelRatio(window.devicePixelRatio);//set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight) // make it full screen
 renderer.outputEncoding = THREE.sRGBEncoding // set color encoding
 container.appendChild(renderer.domElement) // add the renderer to html div
@@ -53,7 +75,7 @@ scene.add(camera)
 
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 pmremGenerator.compileEquirectangularShader();
-const hdriLoader = new EXRLoader();
+const hdriLoader = new EXRLoader(manager);
 hdriLoader.load( 'models/gltf/Modern_Atrium.exr', function ( texture ) {
     const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
     // scene.background = envMap;
@@ -68,16 +90,32 @@ texture.magFilter = THREE.LinearFilter;
 
 /////////////////////////////////////////////////////////////////////////
 ///// MAKE EXPERIENCE FULL SCREEN
-window.addEventListener('resize', () => {
-    const width = window.innerWidth
-    const height = window.innerHeight
-    camera.aspect = width / height
-    camera.updateProjectionMatrix()
+function adjustCameraFOV() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    
+    camera.aspect = w / h;
 
-    renderer.setSize(width, height)
-    renderer.setPixelRatio(2)
-})
+    if (w < h) {  // Portrait mode
+        camera.fov = 80; // Adjust this value based on your needs
+    } else {      // Landscape mode
 
+        const width = window.innerWidth
+        const height = window.innerHeight
+        camera.aspect = width / height
+        camera.updateProjectionMatrix()
+    
+        renderer.setSize(width, height)
+        renderer.setPixelRatio(2)
+
+    }
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(window.devicePixelRatio);
+}
+
+window.addEventListener('resize', adjustCameraFOV);
+adjustCameraFOV(); // Call once to set the initial state
 /////////////////////////////////////////////////////////////////////////
 ///// CREATE ORBIT CONTROLS
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -157,8 +195,8 @@ function setOrbitControlsLimits(){
     // controls.dampingFactor = 0.04
     // controls.minDistance = 35
     // controls.maxDistance = 60
-    controls.enableRotate = true
-    controls.enableZoom = true
+    controls.enableRotate = false
+    controls.enableZoom = false
     // onMouvement=true
     // controls.maxPolarAngle = Math.PI /2.5
 }
@@ -266,11 +304,14 @@ function setOrbitControlsLimits(){
     // const tz = startTarget.z + progress * (endTarget.z - startTarget.z);
     // const distance = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2) + Math.pow(end.z - start.z, 2));
     // const duration = distance * 0.5;  // Change 0.5 to whatever factor makes it feel right
- 
-    
+
     const points = [
         {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432},
         {x: -420.22053031091684, y: 112.82558516828459, z: 302.2956398023865},
+        {x: -77.59535595419545, y: 107.4651531946964, z: -4.778651686478611},
+        {x: 264.88672931671096, y: 104.53754810932516, z: -26.334328984753995},
+        {x: 607.9465878449827, y: 93.3392293365437, z: 12.648415195078083},
+        {x: 556.8130387738962, y: 107.02180637004543, z: -293.12587375627004},
         
     
         
@@ -280,6 +321,10 @@ function setOrbitControlsLimits(){
     const targetPoints = [
         {  x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589 },
         {x: -406.29433389913476, y: 77.77867834138249, z: 1157.743250698177},
+        {x: -72.81996761199011, y: 101.9061750179262, z: -296.30214516804745},
+        {x: 265.4281382980515, y: 98.9785699325562, z: 265.22777153901404},
+        {x: 1464.038094840064, y: 111.0842607048724, z: 10.349475302862574},
+        {x: 548.5657556822914, y: 75.33976318078035, z: -1105.9313967510273},
     
        
     ];
@@ -289,7 +334,7 @@ function setOrbitControlsLimits(){
     
     var scrollableElement = document.body; //document.getElementById('scrollableElement');
     let onMouvement=false
-    // scrollableElement.addEventListener('wheel', checkScrollDirection);
+    scrollableElement.addEventListener('wheel', checkScrollDirection);
     // controls: Vector3 {x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589}    camera: Vector3 {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432}
     function introAnimation() {
         controls.enabled = false //disable orbit controls to animate the camera
@@ -297,22 +342,51 @@ function setOrbitControlsLimits(){
         new TWEEN.Tween(camera.position).to({ // from camera position
             x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432
         }, 7500) // time take to animate
-        .delay(1000).easing(TWEEN.Easing.Quartic.InOut).start() // define delay, easing
+        .easing(TWEEN.Easing.Quartic.InOut).start() // define delay, easing
         .onComplete(function () { //on finish animation
             controls.enabled = true //enable orbit controls
             setOrbitControlsLimits() //enable controls limits
             TWEEN.remove(this) // remove the animation from memory
             window.addEventListener('wheel', checkScrollDirection);
+            document.getElementById('scroll').style.display='block'
 
         })
         new TWEEN.Tween(controls.target).to({
             x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589
-        }, 5000).easing(TWEEN.Easing.Cubic.InOut).start();
+        }, 7500).easing(TWEEN.Easing.Cubic.InOut).start();
     }
-    introAnimation()
+
+
+    ////// adding the popup logic
+    var modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+span.onclick=function () {
+    modal.style.display = "none";
+    document.getElementById('scroll').style.display='block'
+    onMouvement=false
+    window.addEventListener('wheel', checkScrollDirection);
+    
+    
+}
+// Assuming you have a close button in your HTML
+
+// if (span) {
+//     span.addEventListener("click", closePopup);
+// }
+
+
+
+
+
+
+
     function checkScrollDirection(event) {
         if(onMouvement===true){return}
-      if (checkScrollDirectionIsUp(event)) {
+      if (checkScrollDirectionIsDown(event)) {
+        document.getElementById('scroll').style.display='none'
         currentIndexTargets++;
         currentIndexPoints++;
         onMouvement=true
@@ -323,7 +397,12 @@ function setOrbitControlsLimits(){
        }  
     new TWEEN.Tween(camera.position).to({
       x:points[currentIndexPoints].x,y:points[currentIndexPoints].y,z:points[currentIndexPoints].z
-    }, 3000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
+    }, 5000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
+        document.getElementById('scroll').style.display='none'
+        onMouvement=true
+        modal.style.display = "block";
+        window.removeEventListener('wheel', checkScrollDirection);
+
         scrollableElement.removeEventListener('wheel',checkScrollDirection);
         });
     // .onComplete(function() {
@@ -333,19 +412,47 @@ function setOrbitControlsLimits(){
     // })
     new TWEEN.Tween(controls.target).to({
         x:targetPoints[currentIndexTargets].x,y:targetPoints[currentIndexTargets].y,z:targetPoints[currentIndexTargets].z
-    }, 3000).easing(TWEEN.Easing.Exponential.Out).start();
+    }, 3000).easing(TWEEN.Easing.Linear.None).start();
 
         
       } else {
-        console.log('Down');
-      }
+        document.getElementById('scroll').style.display='none'
+        currentIndexTargets--;
+        currentIndexPoints--;
+        onMouvement=true
+       if (currentIndexPoints<=points.length){
+        currentIndexPoints= points.length-1;
+        currentIndexTargets= points.length-1;
+        return
+       }  
+    new TWEEN.Tween(camera.position).to({
+      x:points[currentIndexPoints].x,y:points[currentIndexPoints].y,z:points[currentIndexPoints].z
+    }, 5000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
+        document.getElementById('scroll').style.display='none'
+        onMouvement=true
+        modal.style.display = "block";
+        window.removeEventListener('wheel', checkScrollDirection);
+
+        scrollableElement.removeEventListener('wheel',checkScrollDirection);
+        });
+    // .onComplete(function() {
+    //     if (currentSegment === 4) {  
+    //         onFourthPointReached();
+    //     }
+    // })
+    new TWEEN.Tween(controls.target).to({
+        x:targetPoints[currentIndexTargets].x,y:targetPoints[currentIndexTargets].y,z:targetPoints[currentIndexTargets].z
+    }, 3000).easing(TWEEN.Easing.Linear.None).start();
+
+        
+            }
     }
     
-    function checkScrollDirectionIsUp(event) {
+    function checkScrollDirectionIsDown(event) {
       if (event.wheelDelta) {
-        return event.wheelDelta > 0;
+        return event.wheelDelta < 0;
       }
-      return event.deltaY < 0;
+      return event.deltaY > 0;
     }
  
  
@@ -355,7 +462,27 @@ function setOrbitControlsLimits(){
 
 
 // };
+///////////////////////////////////////////
+////////////////touch detection event
+let startY;
 
+// Listen for the touch start event
+document.addEventListener('touchstart', (event) => {
+    startY = event.touches[0].clientY;
+}, false);
+
+// Listen for the touch end event
+document.addEventListener('touchend', (event) => {
+    const endY = event.changedTouches[0].clientY;
+
+    if (startY - endY > 10) {  // 10 is a threshold value, you can adjust it
+        // Detected swipe up (equivalent to mouse wheel scroll up)
+        checkScrollDirection({ deltaY: 1 });
+    } else if (endY - startY > 10) { // Same threshold value as above
+        // Detected swipe down (equivalent to mouse wheel scroll down)
+        checkScrollDirection({ deltaY: -1 });
+    }
+}, false);
 
 /////////////////////////////////////////////////////////////////////////
 //// RENDER LOOP FUNCTION
@@ -364,13 +491,15 @@ function rendeLoop() {
     // console.log(popupClosed);
     // Check the trigger position and update the popup display
     // checkTriggerPosition(cameraPosition);
+  
     TWEEN.update()
     controls.update()
     renderer.render(scene, camera)
     requestAnimationFrame(rendeLoop)
-    console.log("controls:",controls.target)
-    console.log("camera:",camera.position)
-
+    // console.log("controls:",controls.target)
+    // console.log("camera:",camera.position)
+    // console.log(currentIndexPoints);
+    // console.log(onMouvement);
 }
 
 setOrbitControlsLimits(); // Set initial orbit control limits
