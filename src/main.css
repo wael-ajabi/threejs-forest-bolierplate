@@ -1,4 +1,16 @@
+@font-face { 
+    font-family: 'MyFont'; 
+    src: 
+        url('../static/models/gltf/GE_SS_Two_Bold.otf')  
+        format('opentype'); 
+    font-weight: normal; 
+    font-style: normal; 
+} 
+
+
+
 body, html {
+    font-family: 'MyFont', sans-serif; 
 	margin: 0;
 	padding: 0;
 	overscroll-behavior: none;
@@ -28,10 +40,11 @@ body, html {
     z-index: 90 ;
 }
 .modal-content {
-    background-color: #fefefe;
+    /* background-color: #fefefe; */
+    
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
+    /* border: 1px solid #888; */
     width: 70%;
     text-align: center;
 }
@@ -120,27 +133,44 @@ body, html {
 }
 
 
-@media (max-width: 767px) {
-    #scroll{
-        position: absolute;
-        display:none; 
-        z-index: 50;
-        left:60%;
-        top:70%;
-        width: 40%;
-    }
 
-    /* Add other mobile-specific styles here */
-}
 
 /* Styles for Desktop (or larger devices) */
-@media (min-width: 768px) {
     #scroll{
         position: absolute;
         display:none; 
         z-index: 50;
-        left:80%;
-        top:70%;
+        left:90%;
+        top:80%;
+        width: 2.5%;
+
     }
     /* Add other desktop-specific styles here */
+
+.last{
+    z-index: 100;
+    width: 15%;
+    position: fixed;
+    top: 50%;
+    left: 40%;
+            transform: translate(-50%, -50%) ;
+            display: none;
 }
+
+@keyframes growImage {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.5);
+    }
+  }
+
+  #mobileIcon{
+    position: absolute;
+    display:none; 
+    z-index: 50;
+    left:70%;
+    top:80%;
+    width: 15%;
+  }

@@ -48,7 +48,7 @@ document.body.appendChild(container)
 /////////////////////////////////////////////////////////////////////////
 ///// SCENE CREATION
 const scene = new THREE.Scene()
-scene.background = new THREE.Color('#c8f0f9')
+scene.background = new THREE.Color('#6A8C96')
 
 /////////////////////////////////////////////////////////////////////////
 ///// RENDERER CONFIG
@@ -60,6 +60,9 @@ container.appendChild(renderer.domElement) // add the renderer to html div
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.physicallyCorrectLights = true
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.5; // Set initial exposure
 
 /////////////////////////////////////////////////////////////////////////
 ///// CAMERAS CONFIG
@@ -72,21 +75,43 @@ scene.add(camera)
 
 /////////////////////////////////////////////////////////////////////////
 //////////HDRI
-
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 pmremGenerator.compileEquirectangularShader();
 const hdriLoader = new EXRLoader(manager);
-hdriLoader.load( 'models/gltf/Modern_Atrium.exr', function ( texture ) {
+hdriLoader.load( 'models/gltf/test1.exr', function ( texture ) {
     const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
     // scene.background = envMap;
     scene.environment = envMap;
     texture.minFilter = THREE.LinearFilter;
-texture.magFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
 
     texture.dispose();
     pmremGenerator.dispose();
 });
+//////////////////////////////////////////////////////////////////////////
+///// load screen icon
+function toggleIcons() {
+    const mobileIcon = document.getElementById("mobileIcon");
+    const desktopIcon = document.getElementById("scroll");
 
+    if (window.innerWidth <= 768) {
+        mobileIcon.style.display = "none";
+        desktopIcon.style.display = "none";
+    } else {
+        mobileIcon.style.display = "none";
+        desktopIcon.style.display = "none";
+    }
+}
+
+// Call the function to toggle icons
+toggleIcons();
+
+// Update icons when the window is resized
+window.addEventListener('resize', toggleIcons);
+
+// Call the function to load the icon
+
+// Optionally, update the icon if the window is resized
 
 /////////////////////////////////////////////////////////////////////////
 ///// MAKE EXPERIENCE FULL SCREEN
@@ -122,10 +147,10 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 /////////////////////////////////////////////////////////////////////////
 ///// SCENE LIGHTS
-const ambient = new THREE.AmbientLight(0xffffff, 10);
+const ambient = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambient);
-const sunLight = new THREE.DirectionalLight(0xffffff, 8.5);
-sunLight.position.set(-69, 44, 14);
+const sunLight = new THREE.DirectionalLight(0xffffff, 2.7);
+sunLight.position.set(-33, 24, -20);
 sunLight.castShadow = true;
 
 // Configure shadow properties
@@ -145,11 +170,11 @@ light.position.set(0, 10, 0);
 light.rotation.x = THREE.MathUtils.degToRad(-90);
 scene.add(light);
 const spotLight = new THREE.SpotLight(0xffffff); // white light
-spotLight.position.set(-400, 230, 500); // x, y, z coordinates where the light is coming from
+spotLight.position.set(-400, 270, 460); // x, y, z coordinates where the light is coming from
 spotLight.target.position.set(-577,  -4187, 1699.40728); // x, y, z coordinates where the light is coming from
-spotLight.angle = Math.PI / 10; // Cone angle in radians (default is Math.PI/3)
+spotLight.angle = Math.PI / 5; // Cone angle in radians (default is Math.PI/3)
 spotLight.penumbra = 0.1; // Percentage of the spotlight cone that is attenuated due to penumbra. Takes values between 0 and 1.
-spotLight.intensity = 2000; // Brightness of the light
+spotLight.intensity = 800; // Brightness of the light
 spotLight.distance = 300; // Maximum range of the spotlight, 0 (default) means infinite distance
 spotLight.decay = 1; // The amount the light dims along the distance of the light. Default is 1, which means no decay.
 spotLight.castShadow = true;
@@ -163,15 +188,63 @@ spotLight.shadow.camera.far = 500;
 scene.add(spotLight);
 scene.add(spotLight.target);
 
-const spotLightHelper = new THREE.SpotLightHelper(spotLight);
-scene.add(spotLightHelper);
+// const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+// scene.add(spotLightHelper);
 
-const helper = new THREE.CameraHelper(sunLight.shadow.camera);
-scene.add(helper);
+// const helper = new THREE.CameraHelper(sunLight.shadow.camera);
+// scene.add(helper);
+
+/////////////////////////////////////////////////////////////////////
+//////////////////spotlight 2
+const spotLight2 = new THREE.SpotLight(0xffffff); // white light
+spotLight2.position.set(270.4, 300.6, 65); // x, y, z coordinates where the light is coming from
+spotLight2.target.position.set(-34.7,  -10000, 4300.6); // x, y, z coordinates where the light is coming from
+spotLight2.angle = Math.PI / 8; // Cone angle in radians (default is Math.PI/3)
+spotLight2.penumbra = 0.2; // Percentage of the spotlight cone that is attenuated due to penumbra. Takes values between 0 and 1.
+spotLight2.intensity = 2000; // Brightness of the light
+spotLight2.distance = 300; // Maximum range of the spotlight, 0 (default) means infinite distance
+spotLight2.decay = 1; // The amount the light dims along the distance of the light. Default is 1, which means no decay.
+spotLight2.castShadow = true;
+
+// Configure shadow properties
+spotLight2.shadow.mapSize.width = 2048; // Default is 512
+spotLight2.shadow.mapSize.height = 2048;
+
+spotLight2.shadow.camera.near = 0.5; // Default
+spotLight2.shadow.camera.far = 500;
+scene.add(spotLight2);
+scene.add(spotLight2.target);
+
+// const spotLightHelper2 = new THREE.SpotLightHelper(spotLight2);
+// scene.add(spotLightHelper2);
+
+/////////////////////////////////////////////////////////////////////
+//////////////////spotlight 3
+const spotLight3 = new THREE.SpotLight(0xffffff); // white light
+spotLight3.position.set(740, 300, 0); // x, y, z coordinates where the light is coming from
+spotLight3.target.position.set(3433.5,  -10000, 507.2); // x, y, z coordinates where the light is coming from
+spotLight3.angle = Math.PI / 8; // Cone angle in radians (default is Math.PI/3)
+spotLight3.penumbra = 0.2; // Percentage of the spotlight cone that is attenuated due to penumbra. Takes values between 0 and 1.
+spotLight3.intensity = 1500; // Brightness of the light
+spotLight3.distance = 300; // Maximum range of the spotlight, 0 (default) means infinite distance
+spotLight3.decay = 1; // The amount the light dims along the distance of the light. Default is 1, which means no decay.
+spotLight3.castShadow = true;
+
+// Configure shadow properties
+spotLight3.shadow.mapSize.width = 2048; // Default is 512
+spotLight3.shadow.mapSize.height = 2048;
+
+spotLight3.shadow.camera.near = 0.5; // Default
+spotLight3.shadow.camera.far = 500;
+scene.add(spotLight3);
+scene.add(spotLight3.target);
+
+// const spotLightHelper3 = new THREE.SpotLightHelper(spotLight3);
+// scene.add(spotLightHelper3);
 
 /////////////////////////////////////////////////////////////////////////
 ///// LOADING GLB/GLTF MODEL FROM BLENDER
-loader.load('models/gltf/test1.glb', function (gltf) {
+loader.load('models/gltf/untitled3.glb', function (gltf) {
 
     gltf.scene.traverse( child => {
         if ( child.material ) {if(child){child.castShadow= true; child.receiveShadow=true;}}
@@ -304,14 +377,16 @@ function setOrbitControlsLimits(){
     // const tz = startTarget.z + progress * (endTarget.z - startTarget.z);
     // const distance = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2) + Math.pow(end.z - start.z, 2));
     // const duration = distance * 0.5;  // Change 0.5 to whatever factor makes it feel right
-
+    // camera: Vector3 {x: -73.92778523015048, y: 99.58362633527528, z: -6.454922501612089}
+    // script.js:615 controls: Vector3 {x: -75.09147553505566, y: 117.03045151477868, z: -282.93736623370404}
     const points = [
         {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432},
         {x: -420.22053031091684, y: 112.82558516828459, z: 302.2956398023865},
-        {x: -77.59535595419545, y: 107.4651531946964, z: -4.778651686478611},
+        {x: -73.92778523015048, y: 99.58362633527528, z: -6.454922501612089},//
         {x: 264.88672931671096, y: 104.53754810932516, z: -26.334328984753995},
         {x: 607.9465878449827, y: 93.3392293365437, z: 12.648415195078083},
         {x: 556.8130387738962, y: 107.02180637004543, z: -293.12587375627004},
+        {x: -13.654051586818426, y: 99.18509177839053, z: -403.04772005063205},
         
     
         
@@ -321,10 +396,11 @@ function setOrbitControlsLimits(){
     const targetPoints = [
         {  x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589 },
         {x: -406.29433389913476, y: 77.77867834138249, z: 1157.743250698177},
-        {x: -72.81996761199011, y: 101.9061750179262, z: -296.30214516804745},
+        {x: -75.09147553505566, y: 117.03045151477868, z: -282.93736623370404},
         {x: 265.4281382980515, y: 98.9785699325562, z: 265.22777153901404},
         {x: 1464.038094840064, y: 111.0842607048724, z: 10.349475302862574},
         {x: 548.5657556822914, y: 75.33976318078035, z: -1105.9313967510273},
+        {x: -14.349681002470188, y: 102.10146370890942, z: -475.9903683660481},
     
        
     ];
@@ -334,7 +410,7 @@ function setOrbitControlsLimits(){
     
     var scrollableElement = document.body; //document.getElementById('scrollableElement');
     let onMouvement=false
-    scrollableElement.addEventListener('wheel', checkScrollDirection);
+    // scrollableElement.addEventListener('wheel', checkScrollDirection);
     // controls: Vector3 {x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589}    camera: Vector3 {x: -896.3635793074993, y: 109.12508552265311, z: -4.112903550740432}
     function introAnimation() {
         controls.enabled = false //disable orbit controls to animate the camera
@@ -354,6 +430,14 @@ function setOrbitControlsLimits(){
         new TWEEN.Tween(controls.target).to({
             x: 3.6406308594095727, y: 60.09445705063549, z: -0.5606972660741589
         }, 7500).easing(TWEEN.Easing.Cubic.InOut).start();
+    }
+    // camera: Vector3 {x: 65.37055950269796, y: 53.576627905016664, z: -812.3554435604937}
+    // script.js:559 controls: Vector3 {x: 38.60649073739114, y: 82.4219626418628, z: -973.4914480784842}
+    function finishAnimation(){
+        new TWEEN.Tween(camera.position).to({ // from camera position
+            x: 65.37055950269796, y: 53.576627905016664, z: -812.3554435604937
+        }, 7500) // time take to animate
+        .easing(TWEEN.Easing.Quartic.InOut).start() // define delay, easing
     }
 
 
@@ -385,10 +469,46 @@ span.onclick=function () {
 
     function checkScrollDirection(event) {
         if(onMouvement===true){return}
+        if (checkScrollDirectionIsDown(event)) {
+            currentIndexTargets++;
+            currentIndexPoints++;
+        } 
+        if(currentIndexPoints===6){
+            new TWEEN.Tween(controls.target).to({
+                x: 38.60649073739114, y: 82.4219626418628, z: -973.4914480784842
+              }, 3000).easing(TWEEN.Easing.Linear.None).start()
+            new TWEEN.Tween(camera.position).to({
+                x: -13.654051586818426, y: 99.18509177839053, z: -403.04772005063205
+              }, 2000).easing(TWEEN.Easing.Linear.None).start().onComplete(function() {
+                new TWEEN.Tween(camera.position).to({
+                    x: 65.37055950269796, y: 53.576627905016664, z: -812.3554435604937
+                  }, 2000).easing(TWEEN.Easing.Linear.None).start().onComplete(function() {
+                    const image = document.getElementsByClassName('last')[0];
+                    image.style.display='block'
+                    // Add the animation property
+                    image.style.animation = 'growImage 5s  ';})
+                    new TWEEN.Tween(controls.target).to({
+                        x: 38.60649073739114, y: 82.4219626418628, z: -973.4914480784842
+                      }, 2000).easing(TWEEN.Easing.Linear.None).start()
+                      document.getElementById('scroll').style.display='none'
+
+                  });
+          
+
+                  window.removeEventListener('wheel', checkScrollDirection);
+  
+                  return
+
+        }
+        if (currentIndexPoints >= points.length || currentIndexPoints < 0) {
+            // Reset or clamp the index to stay within bounds
+            currentIndexPoints = Math.min(Math.max(currentIndexPoints, 0), points.length - 1);
+            currentIndexTargets = Math.min(Math.max(currentIndexTargets, 0), targetPoints.length - 1);
+            return;
+        }
       if (checkScrollDirectionIsDown(event)) {
         document.getElementById('scroll').style.display='none'
-        currentIndexTargets++;
-        currentIndexPoints++;
+
         onMouvement=true
        if (currentIndexPoints>=points.length){
         currentIndexPoints= points.length-1;
@@ -412,38 +532,34 @@ span.onclick=function () {
     // })
     new TWEEN.Tween(controls.target).to({
         x:targetPoints[currentIndexTargets].x,y:targetPoints[currentIndexTargets].y,z:targetPoints[currentIndexTargets].z
-    }, 3000).easing(TWEEN.Easing.Linear.None).start();
+    }, 5000).easing(TWEEN.Easing.Quadratic.Out).start();
 
         
       } else {
-        document.getElementById('scroll').style.display='none'
-        currentIndexTargets--;
-        currentIndexPoints--;
-        onMouvement=true
-       if (currentIndexPoints<=points.length){
-        currentIndexPoints= points.length-1;
-        currentIndexTargets= points.length-1;
-        return
-       }  
-    new TWEEN.Tween(camera.position).to({
-      x:points[currentIndexPoints].x,y:points[currentIndexPoints].y,z:points[currentIndexPoints].z
-    }, 5000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
-        document.getElementById('scroll').style.display='none'
-        onMouvement=true
-        modal.style.display = "block";
-        window.removeEventListener('wheel', checkScrollDirection);
+          // Logic for scrolling up
+          currentIndexTargets--;
+          currentIndexPoints--;
+  
+          // Clamp the index to stay within bounds
+          currentIndexPoints = Math.min(Math.max(currentIndexPoints, 0), points.length - 1);
+    currentIndexTargets = Math.min(Math.max(currentIndexTargets, 0), targetPoints.length - 1);
 
-        scrollableElement.removeEventListener('wheel',checkScrollDirection);
-        });
-    // .onComplete(function() {
-    //     if (currentSegment === 4) {  
-    //         onFourthPointReached();
-    //     }
-    // })
-    new TWEEN.Tween(controls.target).to({
-        x:targetPoints[currentIndexTargets].x,y:targetPoints[currentIndexTargets].y,z:targetPoints[currentIndexTargets].z
-    }, 3000).easing(TWEEN.Easing.Linear.None).start();
-
+  
+          // Your animation logic for scrolling up can go here
+          new TWEEN.Tween(camera.position).to({
+              x: points[currentIndexPoints].x,
+              y: points[currentIndexPoints].y,
+              z: points[currentIndexPoints].z
+          }, 5000).easing(TWEEN.Easing.Exponential.Out).start().onComplete(function() {
+              // ... (Your onComplete logic for scrolling up)
+          });
+  
+          new TWEEN.Tween(controls.target).to({
+              x: targetPoints[currentIndexTargets].x,
+              y: targetPoints[currentIndexTargets].y,
+              z: targetPoints[currentIndexTargets].z
+          }, 5000).easing(TWEEN.Easing.Quadratic.Out).start();
+      
         
             }
     }
@@ -491,13 +607,14 @@ function rendeLoop() {
     // console.log(popupClosed);
     // Check the trigger position and update the popup display
     // checkTriggerPosition(cameraPosition);
-  
+    // console.log( currentIndexPoints)
+    //     );
     TWEEN.update()
     controls.update()
     renderer.render(scene, camera)
     requestAnimationFrame(rendeLoop)
-    // console.log("controls:",controls.target)
-    // console.log("camera:",camera.position)
+    console.log("controls:",controls.target)
+    console.log("camera:",camera.position)
     // console.log(currentIndexPoints);
     // console.log(onMouvement);
 }
@@ -526,12 +643,12 @@ gui.add(sunLight, 'intensity').min(0).max(10).step(0.0001).name('Dir intensity')
 gui.add(sunLight.position, 'x').min(-100).max(100).step(0.00001).name('Dir X pos')
 gui.add(sunLight.position, 'y').min(0).max(100).step(0.00001).name('Dir Y pos')
 gui.add(sunLight.position, 'z').min(-100).max(100).step(0.00001).name('Dir Z pos')
-gui.add(spotLight.position, 'x').min(-5000).max(5000).step(0.00001).name('spotLight Z pos')
-gui.add(spotLight.position, 'y').min(-5000).max(5000).step(0.00001).name('spotLight Z pos')
-gui.add(spotLight.position, 'z').min(-5000).max(5000).step(0.00001).name('spotLight Z pos')
-gui.add(spotLight.target.position, 'x').min(-5000).max(5000).step(0.00001).name('spotLight x rot')
-gui.add(spotLight.target.position, 'y').min(-10000).max(10000).step(0.00001).name('spotLight y rot')
-gui.add(spotLight.target.position, 'z').min(-5000).max(5000).step(0.00001).name('spotLight Z rot')
+gui.add(spotLight.position, 'x').min(-5000).max(5000).step(0.1).name('spotLight Z pos')
+gui.add(spotLight.position, 'y').min(-5000).max(5000).step(0.1).name('spotLight Z pos')
+gui.add(spotLight.position, 'z').min(-5000).max(5000).step(0.1).name('spotLight Z pos')
+gui.add(spotLight.target.position, 'x').min(-5000).max(5000).step(0.1).name('spotLight x rot')
+gui.add(spotLight.target.position, 'y').min(-10000).max(10000).step(0.1).name('spotLight y rot')
+gui.add(spotLight.target.position, 'z').min(-5000).max(5000).step(0.1).name('spotLight Z rot')
 gui.addColor(params,'color').name('Dir color').onChange(update)
 gui.addColor(params,'color2').name('Amb color').onChange(update)
 gui.add(ambient, 'intensity').min(0).max(10).step(0.001).name('Amb intensity')
